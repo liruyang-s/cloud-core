@@ -25,7 +25,7 @@ spring:
     redis:
       host: ${REDIS_HOST:127.0.0.1}
       port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}
+      password: ${REDIS_PASSWORD:micro123456}
       database: 0
 
 # Sa-Token 配置（网关与业务服务共用 Redis 会话）

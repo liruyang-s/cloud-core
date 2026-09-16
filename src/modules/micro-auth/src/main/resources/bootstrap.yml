@@ -9,10 +9,14 @@ spring:
       discovery:
         server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         namespace: ${NACOS_NAMESPACE:dev}
+        # 本地模式：NACOS_DISCOVERY_ENABLED=false 可脱离注册中心启动
+        enabled: ${NACOS_DISCOVERY_ENABLED:true}
       config:
         server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
         namespace: ${NACOS_NAMESPACE:dev}
         file-extension: yaml
+        # 本地模式：NACOS_CONFIG_ENABLED=false 时不拉取远程配置，使用本地 application.yml
+        enabled: ${NACOS_CONFIG_ENABLED:true}
     openfeign:
       client:
         config:
