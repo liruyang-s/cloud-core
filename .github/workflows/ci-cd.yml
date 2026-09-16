@@ -1,0 +1,65 @@
+# GitHub Actions 流水线模板
+# 流程：拉代码 → 编译测试 → 构建 docker 镜像 → 推送镜像仓库
+# 业务项目复用：修改 env 中的 IMAGE_REGISTRY / IMAGE_PROJECT 即可
+# 需要在仓库 Secrets 中配置：
+#   REGISTRY_USER / REGISTRY_PASSWORD（镜像仓库凭证）
+# 可通过 workflow_dispatch 手动触发并指定 MODULE
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      module:
+        description: '要构建的模块名'
+        required: true
+        default: 'micro-demo'
+
+env:
+  IMAGE_REGISTRY: registry.example.com
+  IMAGE_PROJECT: micro-cloud
+  MODULE: ${{ github.event.inputs.module || 'micro-demo' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 配置 JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: 编译 + 单元测试
+        run: mvn -B clean package
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.MODULE }}-jar
+          path: src/modules/${{ env.MODULE }}/target/*.jar
+
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 登录镜像仓库
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login $IMAGE_REGISTRY -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
+      - name: 构建并推送镜像
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          docker build --build-arg MODULE=$MODULE \
+            -t $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:$SHORT_SHA \
+            -t $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:latest .
+          docker push $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:$SHORT_SHA
+          docker push $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:latest

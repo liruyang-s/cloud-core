@@ -1,0 +1,47 @@
+server:
+  port: 9400
+
+spring:
+  application:
+    name: micro-message
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+
+# RocketMQ 配置
+rocketmq:
+  name-server: ${ROCKETMQ_NAMESRV:127.0.0.1:9876}
+  producer:
+    group: micro-message-producer-group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 2
+  consumer:
+    # RocketMQ 未部署的环境设为 false，避免消费者启动失败
+    enabled: ${ROCKETMQ_CONSUMER_ENABLED:false}
+
+# Knife4j 接口文档
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# Actuator 监控端点（k8s 存活/就绪探针）
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+logging:
+  level:
+    com.micro.cloud.message: info
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n"

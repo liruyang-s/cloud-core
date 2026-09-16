@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: micro-file
+  cloud:
+    nacos:
+      # Nacos 鉴权账号（开启鉴权后必需，通过环境变量注入）
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:dev}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:dev}
+        file-extension: yaml

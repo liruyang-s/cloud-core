@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: micro-gateway
+  cloud:
+    nacos:
+      # Nacos 鉴权账号（开启鉴权后必需，通过环境变量注入）
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:dev}
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        namespace: ${NACOS_NAMESPACE:dev}
+        file-extension: yaml
+    gateway:
+      # 基于注册中心自动发现路由（服务名即路由 ID）
+      discovery:
+        locator:
+          enabled: false
+      # 按服务前缀精准路由，前端请求统一经网关转发
+      routes:
+        - id: micro-auth
+          uri: lb://micro-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+        - id: micro-user
+          uri: lb://micro-user
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix=1
+        - id: micro-file
+          uri: lb://micro-file
+          predicates:
+            - Path=/file/**
+          filters:
+            - StripPrefix=1
+        - id: micro-message
+          uri: lb://micro-message
+          predicates:
+            - Path=/message/**
+          filters:
+            - StripPrefix=1
+        - id: micro-demo
+          uri: lb://micro-demo
+          predicates:
+            - Path=/demo/**
+          filters:
+            - StripPrefix=1
+
+# Knife4j 网关聚合文档
+knife4j:
+  gateway:
+    enabled: true
+    strategy: manual
+    routes:
+      - name: micro-user
+        url: /user/v3/api-docs
+        service-name: micro-user
+        context-path: /user
+      - name: micro-file
+        url: /file/v3/api-docs
+        service-name: micro-file
+        context-path: /file
+      - name: micro-demo
+        url: /demo/v3/api-docs
+        service-name: micro-demo
+        context-path: /demo

@@ -1,0 +1,47 @@
+# GitLab CI 流水线模板
+# 流程：拉代码 → 编译测试 → 构建 docker 镜像 → 推送镜像仓库
+# 业务项目复用：修改 variables 中的 IMAGE_REGISTRY / IMAGE_PROJECT 即可
+# 需要在 GitLab CI/CD Variables 中配置：
+#   REGISTRY_USER / REGISTRY_PASSWORD（镜像仓库凭证，设为 Masked）
+
+stages:
+  - build
+  - docker
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  IMAGE_REGISTRY: "registry.example.com"
+  IMAGE_PROJECT: "micro-cloud"
+
+cache:
+  key: maven-repo
+  paths:
+    - .m2/repository
+
+# 编译 + 单元测试
+maven-build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-17
+  script:
+    - mvn -B clean package -Dmaven.repo.local=.m2/repository
+  artifacts:
+    paths:
+      - src/modules/*/target/*.jar
+    expire_in: 1 day
+
+# 构建并推送镜像（MODULE 变量指定模块，可在流水线手动触发时覆盖）
+docker-push:
+  stage: docker
+  image: docker:24
+  services:
+    - docker:24-dind
+  variables:
+    MODULE: "micro-demo"
+  before_script:
+    - echo "$REGISTRY_PASSWORD" | docker login $IMAGE_REGISTRY -u "$REGISTRY_USER" --password-stdin
+  script:
+    - docker build --build-arg MODULE=$MODULE -t $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:$CI_COMMIT_SHORT_SHA -t $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:latest .
+    - docker push $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:$CI_COMMIT_SHORT_SHA
+    - docker push $IMAGE_REGISTRY/$IMAGE_PROJECT/$MODULE:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"'

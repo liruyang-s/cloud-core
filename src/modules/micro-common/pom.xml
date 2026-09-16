@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.micro.cloud</groupId>
+        <artifactId>micro-cloud-archetype</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>micro-common</artifactId>
+    <packaging>pom</packaging>
+    <description>全局公共依赖模块</description>
+
+    <dependencies>
+        <!-- 所有公共模块统一使用 Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <modules>
+        <module>common-core</module>
+        <module>common-web</module>
+        <module>common-mybatis</module>
+        <module>common-redis</module>
+        <module>common-sentinel</module>
+        <module>common-rocketmq</module>
+        <module>common-minio</module>
+        <module>common-seata</module>
+    </modules>
+</project>
