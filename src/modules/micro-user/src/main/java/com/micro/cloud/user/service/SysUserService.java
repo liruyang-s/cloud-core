@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.micro.cloud.common.core.exception.ServiceException;
 import com.micro.cloud.common.core.utils.SecurityUtils;
 import com.micro.cloud.common.mybatis.core.LoginUser;
+import com.micro.cloud.common.mybatis.core.LoginUserHolder;
 import com.micro.cloud.common.redis.utils.CacheUtils;
 import com.micro.cloud.user.domain.SysRole;
 import com.micro.cloud.user.domain.SysUser;
@@ -54,6 +55,7 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
     @Transactional(rollbackFor = Exception.class)
     public void insertUser(SysUser user) {
         checkUserNameUnique(user.getUserName());
+        checkPasswordStrength(user.getUserName(), user.getPassword());
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
         save(user);
         insertUserRole(user.getUserId(), user.getRoleIds());
@@ -65,6 +67,11 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateUser(SysUser user) {
+        // 先取旧记录：账号可能被修改，需按旧账号失效缓存
+        SysUser oldUser = getById(user.getUserId());
+        if (oldUser == null) {
+            throw new ServiceException("用户不存在或已被删除");
+        }
         user.setPassword(null);
         updateById(user);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
@@ -73,7 +80,10 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
         userPostMapper.delete(new LambdaQueryWrapper<SysUserPost>()
                 .eq(SysUserPost::getUserId, user.getUserId()));
         insertUserPost(user.getUserId(), user.getPostIds());
-        cacheUtils.remove(USER_INFO_CACHE_KEY + user.getUserName());
+        cacheUtils.remove(USER_INFO_CACHE_KEY + oldUser.getUserName());
+        if (user.getUserName() != null && !user.getUserName().equals(oldUser.getUserName())) {
+            cacheUtils.remove(USER_INFO_CACHE_KEY + user.getUserName());
+        }
     }
 
     /**
@@ -81,9 +91,18 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
      */
     @Transactional(rollbackFor = Exception.class)
     public void deleteUserByIds(List<Long> userIds) {
+        LoginUser current = LoginUserHolder.get();
         for (Long userId : userIds) {
+            // 删除保护：不允许删除自己
+            if (current != null && userId.equals(current.getUserId())) {
+                throw new ServiceException("不允许删除当前登录用户");
+            }
             SysUser user = getById(userId);
             if (user != null) {
+                // 删除保护：不允许删除超级管理员
+                if ("admin".equals(user.getUserName())) {
+                    throw new ServiceException("不允许删除超级管理员账户");
+                }
                 removeById(userId);
                 userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
                         .eq(SysUserRole::getUserId, userId));
@@ -98,10 +117,22 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
      * 重置密码
      */
     public void resetPassword(Long userId, String password) {
-        SysUser user = new SysUser();
-        user.setUserId(userId);
-        user.setPassword(SecurityUtils.encryptPassword(password));
-        updateById(user);
+        if (password == null || password.isBlank()) {
+            throw new ServiceException("新密码不能为空");
+        }
+        if (password.length() < 6 || password.length() > 20) {
+            throw new ServiceException("密码长度必须在 6 到 20 个字符之间");
+        }
+        SysUser user = getById(userId);
+        if (user == null) {
+            throw new ServiceException("用户不存在或已被删除");
+        }
+        checkPasswordStrength(user.getUserName(), password);
+        SysUser update = new SysUser();
+        update.setUserId(userId);
+        update.setPassword(SecurityUtils.encryptPassword(password));
+        updateById(update);
+        cacheUtils.remove(USER_INFO_CACHE_KEY + user.getUserName());
     }
 
     /**
@@ -154,6 +185,47 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
     private void checkUserNameUnique(String userName) {
         if (baseMapper.selectByUserName(userName) != null) {
             throw new ServiceException("用户账号已存在: " + userName);
+        }
+    }
+
+    /** 常见弱口令黑名单 */
+    private static final List<String> WEAK_PASSWORDS = List.of(
+            "123456", "12345678", "123456789", "111111", "000000",
+            "666666", "888888", "654321", "qwerty", "password",
+            "admin123", "admin888", "root123", "abc123", "123abc");
+
+    /**
+     * 弱口令校验：长度、复杂度、黑名单、与账号相关性
+     */
+    private void checkPasswordStrength(String userName, String password) {
+        if (password == null || password.isBlank()) {
+            throw new ServiceException("密码不能为空");
+        }
+        if (password.length() < 6 || password.length() > 20) {
+            throw new ServiceException("密码长度必须在 6 到 20 个字符之间");
+        }
+        if (WEAK_PASSWORDS.contains(password.toLowerCase())) {
+            throw new ServiceException("密码过于简单，请使用更复杂的密码");
+        }
+        if (userName != null && !userName.isBlank()
+                && password.toLowerCase().contains(userName.toLowerCase())) {
+            throw new ServiceException("密码中不能包含用户账号");
+        }
+        int complexity = 0;
+        if (password.chars().anyMatch(Character::isUpperCase)) {
+            complexity++;
+        }
+        if (password.chars().anyMatch(Character::isLowerCase)) {
+            complexity++;
+        }
+        if (password.chars().anyMatch(Character::isDigit)) {
+            complexity++;
+        }
+        if (password.chars().anyMatch(c -> !Character.isLetterOrDigit(c))) {
+            complexity++;
+        }
+        if (complexity < 2) {
+            throw new ServiceException("密码必须包含大小写字母、数字、特殊字符中的至少两类");
         }
     }
 

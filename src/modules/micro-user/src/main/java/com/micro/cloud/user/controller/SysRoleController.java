@@ -1,5 +1,6 @@
 package com.micro.cloud.user.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.micro.cloud.common.core.domain.Result;
 import com.micro.cloud.user.domain.SysRole;
 import com.micro.cloud.user.service.SysRoleService;
@@ -30,24 +31,28 @@ public class SysRoleController {
     private final SysRoleService roleService;
 
     @Operation(summary = "角色列表")
+    @SaCheckPermission("system:role:list")
     @GetMapping("/list")
     public Result<List<SysRole>> list(SysRole role) {
         return Result.success(roleService.selectRoleList(role));
     }
 
     @Operation(summary = "角色详情")
+    @SaCheckPermission("system:role:query")
     @GetMapping("/{roleId}")
     public Result<SysRole> getInfo(@PathVariable Long roleId) {
         return Result.success(roleService.getById(roleId));
     }
 
     @Operation(summary = "角色已分配菜单ID")
+    @SaCheckPermission("system:role:query")
     @GetMapping("/menuIds/{roleId}")
     public Result<List<Long>> menuIds(@PathVariable Long roleId) {
         return Result.success(roleService.selectMenuIdsByRoleId(roleId));
     }
 
     @Operation(summary = "新增角色")
+    @SaCheckPermission("system:role:add")
     @PostMapping
     public Result<Void> add(@Valid @RequestBody SysRole role) {
         roleService.insertRole(role);
@@ -55,6 +60,7 @@ public class SysRoleController {
     }
 
     @Operation(summary = "修改角色")
+    @SaCheckPermission("system:role:edit")
     @PutMapping
     public Result<Void> edit(@Valid @RequestBody SysRole role) {
         roleService.updateRole(role);
@@ -62,6 +68,7 @@ public class SysRoleController {
     }
 
     @Operation(summary = "删除角色")
+    @SaCheckPermission("system:role:remove")
     @DeleteMapping("/{roleIds}")
     public Result<Void> remove(@PathVariable List<Long> roleIds) {
         roleService.deleteRoleByIds(roleIds);

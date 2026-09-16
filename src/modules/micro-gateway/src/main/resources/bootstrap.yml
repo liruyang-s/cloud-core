@@ -56,7 +56,9 @@ spring:
             - StripPrefix=1
 
 # Knife4j 网关聚合文档
+# 生产环境部署时设置 KNIFE4J_PRODUCTION=true 关闭文档（或通过 Nacos 覆盖）
 knife4j:
+  production: ${KNIFE4J_PRODUCTION:false}
   gateway:
     enabled: true
     strategy: manual

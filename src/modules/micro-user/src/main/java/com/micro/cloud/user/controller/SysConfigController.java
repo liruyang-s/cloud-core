@@ -1,5 +1,6 @@
 package com.micro.cloud.user.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.micro.cloud.common.core.domain.Result;
 import com.micro.cloud.user.domain.SysConfig;
 import com.micro.cloud.user.service.SysConfigService;
@@ -30,12 +31,14 @@ public class SysConfigController {
     private final SysConfigService configService;
 
     @Operation(summary = "参数列表")
+    @SaCheckPermission("system:config:list")
     @GetMapping("/list")
     public Result<List<SysConfig>> list(SysConfig config) {
         return Result.success(configService.selectConfigList(config));
     }
 
     @Operation(summary = "参数详情")
+    @SaCheckPermission("system:config:query")
     @GetMapping("/{configId}")
     public Result<SysConfig> getInfo(@PathVariable Long configId) {
         return Result.success(configService.getById(configId));
@@ -48,6 +51,7 @@ public class SysConfigController {
     }
 
     @Operation(summary = "新增参数")
+    @SaCheckPermission("system:config:add")
     @PostMapping
     public Result<Void> add(@Valid @RequestBody SysConfig config) {
         configService.insertConfig(config);
@@ -55,6 +59,7 @@ public class SysConfigController {
     }
 
     @Operation(summary = "修改参数")
+    @SaCheckPermission("system:config:edit")
     @PutMapping
     public Result<Void> edit(@Valid @RequestBody SysConfig config) {
         configService.updateConfig(config);
@@ -62,6 +67,7 @@ public class SysConfigController {
     }
 
     @Operation(summary = "删除参数")
+    @SaCheckPermission("system:config:remove")
     @DeleteMapping("/{configIds}")
     public Result<Void> remove(@PathVariable List<Long> configIds) {
         configService.deleteConfigByIds(configIds);

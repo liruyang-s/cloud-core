@@ -1,11 +1,16 @@
 package com.micro.cloud.user.controller;
 
+import com.micro.cloud.common.core.domain.LoginLogDTO;
 import com.micro.cloud.common.core.domain.Result;
 import com.micro.cloud.common.mybatis.core.LoginUser;
+import com.micro.cloud.user.domain.SysLoginLog;
+import com.micro.cloud.user.service.SysLoginLogService;
 import com.micro.cloud.user.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InnerUserController {
 
     private final SysUserService userService;
+    private final SysLoginLogService loginLogService;
 
     /**
      * 认证中心获取登录用户信息（含角色、权限、数据范围）
@@ -25,5 +31,21 @@ public class InnerUserController {
     @GetMapping("/user/info/{username}")
     public Result<LoginUser> getUserInfo(@PathVariable("username") String username) {
         return Result.success(userService.getLoginUser(username));
+    }
+
+    /**
+     * 认证中心记录登录日志
+     */
+    @PostMapping("/user/loginLog")
+    public Result<Void> recordLoginLog(@RequestBody LoginLogDTO loginLog) {
+        SysLoginLog entity = new SysLoginLog();
+        entity.setUserName(loginLog.getUserName());
+        entity.setIpaddr(loginLog.getIpaddr());
+        entity.setStatus(loginLog.getStatus());
+        entity.setMsg(loginLog.getMsg());
+        entity.setLoginTime(loginLog.getLoginTime());
+        entity.setTraceId(loginLog.getTraceId());
+        loginLogService.save(entity);
+        return Result.success();
     }
 }

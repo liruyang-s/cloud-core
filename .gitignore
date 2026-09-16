@@ -24,3 +24,7 @@ logs/
 
 ### Env ###
 .env
+
+### Frontend ###
+node_modules/
+dist/

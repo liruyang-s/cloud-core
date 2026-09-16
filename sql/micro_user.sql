@@ -306,6 +306,41 @@ INSERT INTO `sys_menu` VALUES (1000, '用户查询', 100, 1, '', '', '', 1, 0, '
 INSERT INTO `sys_menu` VALUES (1001, '用户新增', 100, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:user:add', '#', 'admin', NOW(), '', NULL, '');
 INSERT INTO `sys_menu` VALUES (1002, '用户修改', 100, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:user:edit', '#', 'admin', NOW(), '', NULL, '');
 INSERT INTO `sys_menu` VALUES (1003, '用户删除', 100, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:user:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1004, '重置密码', 100, 5, '', '', '', 1, 0, 'F', '0', '0', 'system:user:resetPwd', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1005, '角色查询', 101, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:role:query', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1006, '角色新增', 101, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:role:add', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1007, '角色修改', 101, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:role:edit', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1008, '角色删除', 101, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:role:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1009, '菜单查询', 102, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:menu:query', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1010, '菜单新增', 102, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:menu:add', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1011, '菜单修改', 102, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:menu:edit', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1012, '菜单删除', 102, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:menu:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1013, '部门查询', 103, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:dept:query', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1014, '部门新增', 103, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:dept:add', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1015, '部门修改', 103, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:dept:edit', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1016, '部门删除', 103, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:dept:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1017, '岗位查询', 104, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:post:query', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1018, '岗位新增', 104, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:post:add', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1019, '岗位修改', 104, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:post:edit', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1020, '岗位删除', 104, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:post:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1021, '字典查询', 105, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:dict:query', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1022, '字典新增', 105, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:dict:add', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1023, '字典修改', 105, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:dict:edit', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1024, '字典删除', 105, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:dict:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (106, '参数设置', 1, 7, 'config', 'system/config/index', '', 1, 0, 'C', '0', '0', 'system:config:list', 'edit', 'admin', NOW(), '', NULL, '参数设置菜单');
+INSERT INTO `sys_menu` VALUES (107, '通知公告', 1, 8, 'notice', 'system/notice/index', '', 1, 0, 'C', '0', '0', 'system:notice:list', 'message', 'admin', NOW(), '', NULL, '通知公告菜单');
+INSERT INTO `sys_menu` VALUES (108, '日志管理', 1, 9, 'log', 'system/log/index', '', 1, 0, 'C', '0', '0', 'system:operlog:list', 'log', 'admin', NOW(), '', NULL, '日志管理菜单');
+INSERT INTO `sys_menu` VALUES (1030, '参数查询', 106, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:config:query', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1031, '参数新增', 106, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:config:add', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1032, '参数修改', 106, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:config:edit', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1033, '参数删除', 106, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:config:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1034, '公告查询', 107, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:notice:query', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1035, '公告新增', 107, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:notice:add', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1036, '公告修改', 107, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:notice:edit', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1037, '公告删除', 107, 4, '', '', '', 1, 0, 'F', '0', '0', 'system:notice:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1038, '操作日志删除', 108, 1, '', '', '', 1, 0, 'F', '0', '0', 'system:operlog:remove', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1039, '登录日志查询', 108, 2, '', '', '', 1, 0, 'F', '0', '0', 'system:loginlog:list', '#', 'admin', NOW(), '', NULL, '');
+INSERT INTO `sys_menu` VALUES (1040, '登录日志删除', 108, 3, '', '', '', 1, 0, 'F', '0', '0', 'system:loginlog:remove', '#', 'admin', NOW(), '', NULL, '');
 
 -- 默认用户（密码 admin123，BCrypt 加密）
 INSERT INTO `sys_user` VALUES (1, 101, 'admin', '超级管理员', 'admin@micro.cloud', '15888888888', '0', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '127.0.0.1', NOW(), 'admin', NOW(), '', NULL, '管理员', '0');
@@ -316,7 +351,11 @@ INSERT INTO `sys_user_role` VALUES (1, 1);
 INSERT INTO `sys_user_role` VALUES (2, 2);
 
 -- 角色菜单关联（管理员全部菜单，普通角色仅用户查询）
-INSERT INTO `sys_role_menu` VALUES (1, 1), (1, 100), (1, 101), (1, 102), (1, 103), (1, 104), (1, 105), (1, 1000), (1, 1001), (1, 1002), (1, 1003);
+INSERT INTO `sys_role_menu` VALUES (1, 1), (1, 100), (1, 101), (1, 102), (1, 103), (1, 104), (1, 105), (1, 106), (1, 107), (1, 108),
+ (1, 1000), (1, 1001), (1, 1002), (1, 1003), (1, 1004), (1, 1005), (1, 1006), (1, 1007), (1, 1008), (1, 1009),
+ (1, 1010), (1, 1011), (1, 1012), (1, 1013), (1, 1014), (1, 1015), (1, 1016), (1, 1017), (1, 1018), (1, 1019),
+ (1, 1020), (1, 1021), (1, 1022), (1, 1023), (1, 1024), (1, 1030), (1, 1031), (1, 1032), (1, 1033), (1, 1034),
+ (1, 1035), (1, 1036), (1, 1037), (1, 1038), (1, 1039), (1, 1040);
 INSERT INTO `sys_role_menu` VALUES (2, 1), (2, 100), (2, 1000);
 
 -- 角色部门关联（普通角色自定义数据权限：仅可访问研发部门）

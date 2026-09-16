@@ -1,0 +1,62 @@
+[
+  {
+    "resource": "micro-auth",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 20,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 5,
+    "paramItem": {
+      "parseStrategy": 0
+    }
+  },
+  {
+    "resource": "micro-user",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 200,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 20,
+    "paramItem": {
+      "parseStrategy": 0
+    }
+  },
+  {
+    "resource": "micro-file",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 50,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 10,
+    "paramItem": {
+      "parseStrategy": 0
+    }
+  },
+  {
+    "resource": "micro-message",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 100,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 10,
+    "paramItem": {
+      "parseStrategy": 0
+    }
+  },
+  {
+    "resource": "micro-demo",
+    "resourceMode": 0,
+    "grade": 1,
+    "count": 100,
+    "intervalSec": 1,
+    "controlBehavior": 0,
+    "burst": 10,
+    "paramItem": {
+      "parseStrategy": 0
+    }
+  }
+]

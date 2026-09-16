@@ -1,5 +1,6 @@
 package com.micro.cloud.user.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.micro.cloud.common.core.domain.Result;
 import com.micro.cloud.user.domain.SysLoginLog;
 import com.micro.cloud.user.domain.SysOperLog;
@@ -29,12 +30,14 @@ public class SysLogController {
     private final SysLoginLogService loginLogService;
 
     @Operation(summary = "操作日志列表")
+    @SaCheckPermission("system:operlog:list")
     @GetMapping("/oper/list")
     public Result<List<SysOperLog>> operList(SysOperLog operLog) {
         return Result.success(operLogService.selectOperLogList(operLog));
     }
 
     @Operation(summary = "删除操作日志")
+    @SaCheckPermission("system:operlog:remove")
     @DeleteMapping("/oper/{operIds}")
     public Result<Void> removeOper(@PathVariable List<Long> operIds) {
         operLogService.removeByIds(operIds);
@@ -42,6 +45,7 @@ public class SysLogController {
     }
 
     @Operation(summary = "清空操作日志")
+    @SaCheckPermission("system:operlog:remove")
     @DeleteMapping("/oper/clean")
     public Result<Void> cleanOper() {
         operLogService.cleanOperLog();
@@ -49,12 +53,14 @@ public class SysLogController {
     }
 
     @Operation(summary = "登录日志列表")
+    @SaCheckPermission("system:loginlog:list")
     @GetMapping("/login/list")
     public Result<List<SysLoginLog>> loginList(SysLoginLog loginLog) {
         return Result.success(loginLogService.selectLoginLogList(loginLog));
     }
 
     @Operation(summary = "删除登录日志")
+    @SaCheckPermission("system:loginlog:remove")
     @DeleteMapping("/login/{infoIds}")
     public Result<Void> removeLogin(@PathVariable List<Long> infoIds) {
         loginLogService.removeByIds(infoIds);
@@ -62,6 +68,7 @@ public class SysLogController {
     }
 
     @Operation(summary = "清空登录日志")
+    @SaCheckPermission("system:loginlog:remove")
     @DeleteMapping("/login/clean")
     public Result<Void> cleanLogin() {
         loginLogService.cleanLoginLog();

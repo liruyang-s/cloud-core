@@ -18,4 +18,10 @@ public class LoginBody implements Serializable {
     /** 密码 */
     @NotBlank(message = "密码不能为空")
     private String password;
+
+    /** 验证码唯一标识 */
+    private String uuid;
+
+    /** 验证码 */
+    private String code;
 }

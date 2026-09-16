@@ -1,5 +1,7 @@
 package com.micro.cloud.gateway.config;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.reactor.filter.SaReactorFilter;
 import cn.dev33.satoken.reactor.spring.SaTokenContextRegister;
 import cn.dev33.satoken.router.SaRouter;
@@ -22,13 +24,10 @@ import org.springframework.context.annotation.Import;
 @Import(SaTokenContextRegister.class)
 public class SaTokenConfig {
 
-    /** 白名单路径：登录、验证码、健康检查、接口文档 */
+    /** 白名单路径：登录、验证码、接口文档（生产环境建议通过 knife4j.production=true 关闭文档） */
     private static final String[] WHITE_LIST = {
             "/auth/login",
             "/auth/captcha",
-            "/actuator/**",
-            // 经网关访问各服务的健康检查（路径带服务前缀）
-            "/*/actuator/**",
             "/doc.html",
             "/webjars/**",
             "/v3/api-docs/**",
@@ -40,11 +39,21 @@ public class SaTokenConfig {
         return new SaReactorFilter()
                 .addInclude("/**")
                 .addExclude("/favicon.ico")
-                .setAuth(obj ->
-                        SaRouter.match("/**")
-                                .notMatch(WHITE_LIST)
-                                .check(r -> StpUtil.checkLogin())
-                )
-                .setError(e -> SaResult.error(e.getMessage()).setCode(401));
+                .setAuth(obj -> {
+                    // 内部 RPC 接口（/inner/**）仅供服务间调用，经网关的外部访问一律拒绝
+                    SaRouter.match("/inner/**", "/**/inner/**")
+                            .check(r -> {
+                                throw new SaTokenException("内部接口，禁止外部访问");
+                            });
+                    SaRouter.match("/**")
+                            .notMatch(WHITE_LIST)
+                            .check(r -> StpUtil.checkLogin());
+                })
+                .setError(e -> {
+                    if (e instanceof NotLoginException) {
+                        return SaResult.error("未登录或 Token 已过期").setCode(401);
+                    }
+                    return SaResult.error(e.getMessage()).setCode(403);
+                });
     }
 }

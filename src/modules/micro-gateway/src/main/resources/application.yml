@@ -45,6 +45,7 @@ gateway:
   ip-blacklist:
 
 # Actuator 监控端点（k8s 存活/就绪探针）
+# 仅暴露探针所需端点，健康详情仅认证后可见，避免泄露组件信息
 management:
   endpoints:
     web:
@@ -52,7 +53,7 @@ management:
         include: health,info
   endpoint:
     health:
-      show-details: always
+      show-details: when-authorized
       probes:
         enabled: true
 

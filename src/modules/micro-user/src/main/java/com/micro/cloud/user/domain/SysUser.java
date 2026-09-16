@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -51,7 +52,8 @@ public class SysUser extends BaseEntity {
     /** 头像地址 */
     private String avatar;
 
-    /** 密码（BCrypt） */
+    /** 密码（BCrypt）：只允许接收（新增/重置密码），禁止序列化输出 */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     /** 帐号状态（0正常 1停用） */

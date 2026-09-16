@@ -1,5 +1,6 @@
 package com.micro.cloud.user.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import com.micro.cloud.common.core.domain.Result;
 import com.micro.cloud.user.domain.SysMenu;
@@ -31,12 +32,14 @@ public class SysMenuController {
     private final SysMenuService menuService;
 
     @Operation(summary = "菜单列表")
+    @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
     public Result<List<SysMenu>> list(SysMenu menu) {
         return Result.success(menuService.selectMenuList(menu));
     }
 
     @Operation(summary = "菜单树")
+    @SaCheckPermission("system:menu:list")
     @GetMapping("/tree")
     public Result<List<SysMenu>> tree(SysMenu menu) {
         return Result.success(menuService.buildMenuTree(menuService.selectMenuList(menu)));
@@ -50,12 +53,14 @@ public class SysMenuController {
     }
 
     @Operation(summary = "菜单详情")
+    @SaCheckPermission("system:menu:query")
     @GetMapping("/{menuId}")
     public Result<SysMenu> getInfo(@PathVariable Long menuId) {
         return Result.success(menuService.getById(menuId));
     }
 
     @Operation(summary = "新增菜单")
+    @SaCheckPermission("system:menu:add")
     @PostMapping
     public Result<Void> add(@Valid @RequestBody SysMenu menu) {
         menuService.save(menu);
@@ -63,6 +68,7 @@ public class SysMenuController {
     }
 
     @Operation(summary = "修改菜单")
+    @SaCheckPermission("system:menu:edit")
     @PutMapping
     public Result<Void> edit(@Valid @RequestBody SysMenu menu) {
         menuService.updateById(menu);
@@ -70,6 +76,7 @@ public class SysMenuController {
     }
 
     @Operation(summary = "删除菜单")
+    @SaCheckPermission("system:menu:remove")
     @DeleteMapping("/{menuId}")
     public Result<Void> remove(@PathVariable Long menuId) {
         menuService.removeById(menuId);

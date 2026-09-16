@@ -1,5 +1,6 @@
 package com.micro.cloud.user.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.micro.cloud.common.core.domain.Result;
 import com.micro.cloud.user.domain.SysNotice;
 import com.micro.cloud.user.service.SysNoticeService;
@@ -30,18 +31,21 @@ public class SysNoticeController {
     private final SysNoticeService noticeService;
 
     @Operation(summary = "公告列表")
+    @SaCheckPermission("system:notice:list")
     @GetMapping("/list")
     public Result<List<SysNotice>> list(SysNotice notice) {
         return Result.success(noticeService.selectNoticeList(notice));
     }
 
     @Operation(summary = "公告详情")
+    @SaCheckPermission("system:notice:query")
     @GetMapping("/{noticeId}")
     public Result<SysNotice> getInfo(@PathVariable Long noticeId) {
         return Result.success(noticeService.getById(noticeId));
     }
 
     @Operation(summary = "新增公告")
+    @SaCheckPermission("system:notice:add")
     @PostMapping
     public Result<Void> add(@Valid @RequestBody SysNotice notice) {
         noticeService.save(notice);
@@ -49,6 +53,7 @@ public class SysNoticeController {
     }
 
     @Operation(summary = "修改公告")
+    @SaCheckPermission("system:notice:edit")
     @PutMapping
     public Result<Void> edit(@Valid @RequestBody SysNotice notice) {
         noticeService.updateById(notice);
@@ -56,6 +61,7 @@ public class SysNoticeController {
     }
 
     @Operation(summary = "删除公告")
+    @SaCheckPermission("system:notice:remove")
     @DeleteMapping("/{noticeIds}")
     public Result<Void> remove(@PathVariable List<Long> noticeIds) {
         noticeService.removeByIds(noticeIds);
